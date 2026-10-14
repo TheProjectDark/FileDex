@@ -1,0 +1,68 @@
+﻿<Window x:Class="FileDex.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:FileDex.ViewModels"
+        Title="FileDex" Height="640" Width="980">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </Window.Resources>
+    <Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,8">
+            <Button Content="Open File..." Command="{Binding OpenFileCommand}"
+                    Padding="12,6" Margin="0,0,8,0"/>
+            <Button Content="Refresh" Command="{Binding RefreshCommand}"
+                    Padding="12,6" Margin="0,0,8,0"/>
+            <TextBlock Text="{Binding SelectedFile}" VerticalAlignment="Center"
+                       Margin="8,0,0,0" Foreground="Gray" TextTrimming="CharacterEllipsis"/>
+        </StackPanel>
+
+        <TextBox Grid.Row="1" Margin="0,0,0,8"
+                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                 ToolTip="Search by key or value"/>
+
+        <DataGrid Grid.Row="2" ItemsSource="{Binding Entries}"
+                  AutoGenerateColumns="False" IsReadOnly="True"
+                  CanUserAddRows="False" HeadersVisibility="Column"
+                  GridLinesVisibility="Horizontal">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="140"/>
+                <DataGridTextColumn Header="Key" Binding="{Binding Key}" Width="220"/>
+                <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*"/>
+                <DataGridTemplateColumn Header="" Width="60">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Copy" Padding="6,2"
+                                    Command="{Binding DataContext.CopyValueCommand,
+                                              RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                    CommandParameter="{Binding Value}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+            <StatusBar Grid.Row="3" Margin="0,8,0,0">
+            <StatusBarItem>
+                <TextBlock Text="{Binding CurrentMetadata.SizeDisplay, StringFormat=Size: {0}}"/>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem>
+                <TextBlock Text="{Binding Entries.Count, StringFormat=Entries: {0}}"/>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <TextBlock Text="Loading..." Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}"/>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Window>
