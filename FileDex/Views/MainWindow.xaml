@@ -10,28 +10,53 @@
         <vm:MainViewModel/>
     </Window.DataContext>
 
-    <Grid Margin="10">
+    <Window.InputBindings>
+        <KeyBinding Key="O" Modifiers="Control" Command="{Binding OpenFileCommand}"/>
+        <KeyBinding Key="F5" Command="{Binding RefreshCommand}"/>
+    </Window.InputBindings>
+
+    <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,8">
+        <Menu Grid.Row="0">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open…"
+                          Command="{Binding OpenFileCommand}"
+                          InputGestureText="Ctrl+O"/>
+                <MenuItem Header="_Refresh"
+                          Command="{Binding RefreshCommand}"
+                          InputGestureText="F5"/>
+                <MenuItem Header="E_xit" Click="Exit_Click"
+                          InputGestureText="Alt+F4"/>
+            </MenuItem>
+
+            <MenuItem Header="_Help">
+                <MenuItem Header="_About FileDex…" Click="About_Click"/>
+            </MenuItem>
+        </Menu>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10,8,10,8">
             <Button Content="Open File..." Command="{Binding OpenFileCommand}"
                     Padding="12,6" Margin="0,0,8,0"/>
             <Button Content="Refresh" Command="{Binding RefreshCommand}"
                     Padding="12,6" Margin="0,0,8,0"/>
             <TextBlock Text="{Binding SelectedFile}" VerticalAlignment="Center"
-                       Margin="8,0,0,0" Foreground="Gray" TextTrimming="CharacterEllipsis"/>
+                       Margin="8,0,0,0" Foreground="Gray"
+                       TextTrimming="CharacterEllipsis"/>
         </StackPanel>
 
-        <TextBox Grid.Row="1" Margin="0,0,0,8"
+        <TextBox Grid.Row="2" Margin="10,0,10,8"
                  Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                  ToolTip="Search by key or value"/>
 
-        <DataGrid Grid.Row="2" ItemsSource="{Binding Entries}"
+        <DataGrid Grid.Row="3" Margin="10,0,10,0"
+                  ItemsSource="{Binding Entries}"
                   AutoGenerateColumns="False" IsReadOnly="True"
                   CanUserAddRows="False" HeadersVisibility="Column"
                   GridLinesVisibility="Horizontal">
@@ -52,7 +77,7 @@
             </DataGrid.Columns>
         </DataGrid>
 
-            <StatusBar Grid.Row="3" Margin="0,8,0,0">
+        <StatusBar Grid.Row="4" Margin="0,8,0,0">
             <StatusBarItem>
                 <TextBlock Text="{Binding CurrentMetadata.SizeDisplay, StringFormat=Size: {0}}"/>
             </StatusBarItem>
@@ -61,7 +86,8 @@
                 <TextBlock Text="{Binding Entries.Count, StringFormat=Entries: {0}}"/>
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right">
-                <TextBlock Text="Loading..." Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}"/>
+                <TextBlock Text="Loading..."
+                           Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}"/>
             </StatusBarItem>
         </StatusBar>
     </Grid>
