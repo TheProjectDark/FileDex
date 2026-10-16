@@ -1,5 +1,7 @@
 # FileDex
 
+![FileDex](assets/FileDex.png)
+
 FileDex is a small WPF application for viewing and inspecting file metadata.
 
 Features
